@@ -3,27 +3,17 @@ import 'package:fast_app_base/data/memory/todo_status.dart';
 import 'package:fast_app_base/data/memory/vo_todo.dart';
 import 'package:fast_app_base/screen/dialog/d_confirm.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod/riverpod.dart';
 
 import '../../screen/main/write/d_write_todo.dart';
 
-class TodoDataHolder extends InheritedWidget {
-  final TodoDataNotifier notifier;
+//전역으로 선언
+final todoDataProvider = StateNotifierProvider<TodoDataHolder, List<Todo>>(
+    (ref) => TodoDataHolder());
 
-  const TodoDataHolder({
-    super.key,
-    required super.child,
-    required this.notifier,
-  });
-
-  @override
-  bool updateShouldNotify(covariant InheritedWidget oldWidget) {
-    return true;
-  }
-
-  static TodoDataHolder _of(BuildContext context) {
-    TodoDataHolder inherited = (context.dependOnInheritedWidgetOfExactType<TodoDataHolder>())!;
-    return inherited;
-  }
+class TodoDataHolder extends StateNotifier<List<Todo>> {
+  TodoDataHolder() : super([]);
 
   void changeTodoStatus(Todo todo) async {
     switch (todo.status) {
@@ -37,17 +27,19 @@ class TodoDataHolder extends InheritedWidget {
           todo.status = TodoStatus.incomplete;
         });
     }
-    notifier.notify();
+    //List<Todo> 업데이트
+    state = List.of(state);
   }
 
   void addTodo() async {
     final result = await WriteTodoDialog().show();
     if (result != null) {
-      notifier.addTodo(Todo(
+      state.add(Todo(
         id: DateTime.now().millisecondsSinceEpoch,
         title: result.text,
         dueDate: result.dateTime,
       ));
+      state = List.of(state);
     }
   }
 
@@ -56,16 +48,17 @@ class TodoDataHolder extends InheritedWidget {
     if (result != null) {
       todo.title = result.text;
       todo.dueDate = result.dateTime;
-      notifier.notify();
+      state = List.of(state);
     }
   }
 
   void removeTodo(Todo todo) {
-    notifier.value.remove(todo);
-    notifier.notify();
+    state.remove(todo);
+    state = List.of(state);
   }
 }
 
-extension TodoDataHolderContextExtension on BuildContext {
-  TodoDataHolder get holder => TodoDataHolder._of(this);
+//extension으로 만들어 놓으면, ref read할때마다 read코드 쓸 필요 없음
+extension TodoListHolderProvider on WidgetRef {
+  TodoDataHolder get readTodoHolder => read(todoDataProvider.notifier);
 }
