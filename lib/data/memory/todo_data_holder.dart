@@ -8,9 +8,16 @@ import 'package:riverpod/riverpod.dart';
 
 import '../../screen/main/write/d_write_todo.dart';
 
+final userProvider = FutureProvider<String>((ref) => 'abc');
+
 //전역으로 선언
-final todoDataProvider = StateNotifierProvider<TodoDataHolder, List<Todo>>(
-    (ref) => TodoDataHolder());
+final todoDataProvider =
+    StateNotifierProvider<TodoDataHolder, List<Todo>>((ref) {
+  //todoData를 받아올때 userID를 watch하다가 userID가 변경되면 새로운 TodoData를 가져올 수 있도록 provider 연결
+  final userID = ref.watch(userProvider);
+  debugPrint(userID.value);
+  return TodoDataHolder();
+});
 
 class TodoDataHolder extends StateNotifier<List<Todo>> {
   TodoDataHolder() : super([]);
