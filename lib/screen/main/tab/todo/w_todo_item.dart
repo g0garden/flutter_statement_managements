@@ -2,6 +2,7 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:fast_app_base/common/common.dart';
 import 'package:fast_app_base/common/dart/extension/datetime_extension.dart';
 import 'package:fast_app_base/common/widget/w_rounded_container.dart';
+import 'package:fast_app_base/data/memory/bloc/todo_event.dart';
 import 'package:fast_app_base/screen/main/tab/todo/w_todo_status.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +18,7 @@ class TodoItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dismissible(
       onDismissed: (direction) {
-        context.readTodoCubit.removeTodo(todo);
+        context.readTodoBloc.add(TodoRemoveEvent(todo));
       },
       background: RoundedContainer(
         color: context.appColors.removeTodoBg,
@@ -60,8 +61,8 @@ class TodoItem extends StatelessWidget {
                   IconButton(
                       onPressed: () async {
                         //read가 Get의 find
-                        final todoData = context.read<TodoCubit>();
-                        todoData.editTodo(todo);
+
+                        context.readTodoBloc.add(TodoContentUpdateEvent(todo));
                       },
                       icon: const Icon(EvaIcons.editOutline))
                 ],
