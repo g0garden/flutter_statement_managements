@@ -4,6 +4,7 @@ import 'package:fast_app_base/common/dart/extension/datetime_extension.dart';
 import 'package:fast_app_base/common/widget/w_rounded_container.dart';
 import 'package:fast_app_base/screen/main/tab/todo/w_todo_status.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../data/memory/vo_todo.dart';
 
@@ -15,8 +16,8 @@ class TodoItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      onDismissed: (direction){
-        context.holder.removeTodo(todo);
+      onDismissed: (direction) {
+        context.readTodoCubit.removeTodo(todo);
       },
       background: RoundedContainer(
         color: context.appColors.removeTodoBg,
@@ -58,7 +59,9 @@ class TodoItem extends StatelessWidget {
                   Expanded(child: todo.title.text.size(20).medium.make()),
                   IconButton(
                       onPressed: () async {
-                        context.holder.editTodo(todo);
+                        //read가 Get의 find
+                        final todoData = context.read<TodoCubit>();
+                        todoData.editTodo(todo);
                       },
                       icon: const Icon(EvaIcons.editOutline))
                 ],
