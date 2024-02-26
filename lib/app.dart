@@ -39,16 +39,14 @@ class AppState extends State<App> with Nav, WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return CustomThemeApp(
       child: Builder(builder: (context) {
-        return ProviderScope(
-          child: MaterialApp(
-            navigatorKey: App.navigatorKey,
-            localizationsDelegates: context.localizationDelegates,
-            supportedLocales: context.supportedLocales,
-            locale: context.locale,
-            title: 'Image Finder',
-            theme: context.themeType.themeData,
-            home: const MainScreen(),
-          ),
+        return MaterialApp(
+          navigatorKey: App.navigatorKey,
+          localizationsDelegates: context.localizationDelegates,
+          supportedLocales: context.supportedLocales,
+          locale: context.locale,
+          title: 'Image Finder',
+          theme: context.themeType.themeData,
+          home: const MainScreenWrapper(),
         );
       }),
     );
