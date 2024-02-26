@@ -2,25 +2,28 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:fast_app_base/screen/main/tab/tab_item.dart';
 import 'package:fast_app_base/screen/main/tab/tab_navigator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../common/common.dart';
 import 'w_menu_drawer.dart';
 
-class MainScreen extends StatefulWidget {
+class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
 
   @override
-  State<MainScreen> createState() => MainScreenState();
+  ConsumerState<MainScreen> createState() => MainScreenState();
 }
 
-class MainScreenState extends State<MainScreen> with SingleTickerProviderStateMixin {
+class MainScreenState extends ConsumerState<MainScreen>
+    with SingleTickerProviderStateMixin {
   TabItem _currentTab = TabItem.todo;
   final tabs = [TabItem.todo, TabItem.search];
   final List<GlobalKey<NavigatorState>> navigatorKeys = [];
 
   int get _currentIndex => tabs.indexOf(_currentTab);
 
-  GlobalKey<NavigatorState> get _currentTabNavigationKey => navigatorKeys[_currentIndex];
+  GlobalKey<NavigatorState> get _currentTabNavigationKey =>
+      navigatorKeys[_currentIndex];
 
   bool get extendBody => true;
 
@@ -42,7 +45,8 @@ class MainScreenState extends State<MainScreen> with SingleTickerProviderStateMi
         drawer: const MenuDrawer(),
         body: Container(
           color: context.appColors.seedColor.getMaterialColorValues[200],
-          padding: EdgeInsets.only(bottom: extendBody ? 60 - bottomNavigationBarBorderRadius : 0),
+          padding: EdgeInsets.only(
+              bottom: extendBody ? 60 - bottomNavigationBarBorderRadius : 0),
           child: SafeArea(
             bottom: !extendBody,
             child: pages,
@@ -50,8 +54,8 @@ class MainScreenState extends State<MainScreen> with SingleTickerProviderStateMi
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            context.holder.addTodo();
-
+            //final holder = ref.read(todoDataProvider.notifier);
+            ref.readTodoHolder.addTodo();
           },
           child: const Icon(EvaIcons.plus),
         ),
@@ -128,13 +132,15 @@ class MainScreenState extends State<MainScreen> with SingleTickerProviderStateMi
     });
   }
 
-  BottomNavigationBarItem bottomItem(
-      bool activate, IconData iconData, IconData inActivateIconData, String label) {
+  BottomNavigationBarItem bottomItem(bool activate, IconData iconData,
+      IconData inActivateIconData, String label) {
     return BottomNavigationBarItem(
         icon: Icon(
           key: ValueKey(label),
           activate ? iconData : inActivateIconData,
-          color: activate ? context.appColors.iconButton : context.appColors.iconButtonInactivate,
+          color: activate
+              ? context.appColors.iconButton
+              : context.appColors.iconButtonInactivate,
         ),
         label: label);
   }

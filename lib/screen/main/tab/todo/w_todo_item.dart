@@ -4,19 +4,20 @@ import 'package:fast_app_base/common/dart/extension/datetime_extension.dart';
 import 'package:fast_app_base/common/widget/w_rounded_container.dart';
 import 'package:fast_app_base/screen/main/tab/todo/w_todo_status.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../data/memory/vo_todo.dart';
 
-class TodoItem extends StatelessWidget {
+class TodoItem extends ConsumerWidget {
   final Todo todo;
 
   const TodoItem(this.todo, {super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Dismissible(
-      onDismissed: (direction){
-        context.holder.removeTodo(todo);
+      onDismissed: (direction) {
+        ref.readTodoHolder.removeTodo(todo);
       },
       background: RoundedContainer(
         color: context.appColors.removeTodoBg,
@@ -58,7 +59,7 @@ class TodoItem extends StatelessWidget {
                   Expanded(child: todo.title.text.size(20).medium.make()),
                   IconButton(
                       onPressed: () async {
-                        context.holder.editTodo(todo);
+                        ref.readTodoHolder.editTodo(todo);
                       },
                       icon: const Icon(EvaIcons.editOutline))
                 ],
