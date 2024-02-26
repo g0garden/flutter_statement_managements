@@ -7,14 +7,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../common/common.dart';
 import 'w_menu_drawer.dart';
 
-class MainScreen extends ConsumerStatefulWidget {
-  const MainScreen({super.key});
+class MainScreenWrapper extends ConsumerWidget {
+  const MainScreenWrapper({super.key});
 
   @override
-  ConsumerState<MainScreen> createState() => MainScreenState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    return const ProviderScope(child: _MainScreen());
+  }
 }
 
-class MainScreenState extends ConsumerState<MainScreen>
+class _MainScreen extends ConsumerStatefulWidget {
+  const _MainScreen({super.key});
+
+  @override
+  ConsumerState<_MainScreen> createState() => MainScreenState();
+}
+
+class MainScreenState extends ConsumerState<_MainScreen>
     with SingleTickerProviderStateMixin {
   TabItem _currentTab = TabItem.todo;
   final tabs = [TabItem.todo, TabItem.search];
